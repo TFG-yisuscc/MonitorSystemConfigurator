@@ -56,5 +56,5 @@ configs/
 | `temperature` | float | decimal no negativo |
 | `model_path_or_name` | string | nombre del modelo o ruta al fichero GGUF |
 | `hardware_period` | float | intervalo de muestreo en segundos (valor único) |
-| `anotations` | string | descripción libre opcional |
+| `anotations` | object | anotaciones opcionales (solo valor único): `fan` (bool), `accelerator` (bool), `other` (string libre) — son recordatorios del entorno de prueba y no modifican la configuración generada |
 | `ollama_url` | string | solo se pregunta cuando el motor es `OLLAMA` |

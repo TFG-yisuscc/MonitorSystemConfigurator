@@ -48,7 +48,7 @@ FIELDS = [
     dict(key="temperature",        label="Temperature",            type="float",  required=True,  default=0.0),
     dict(key="model_path_or_name", label="Model Path / Name",      type="string", required=True),
     dict(key="hardware_period",    label="Hardware Period (s)",    type="float",  required=True,  single_only=True, default=0.5),
-    dict(key="anotations",         label="Annotations",            type="string", required=False, default="", single_only=True),
+    dict(key="anotations",         label="Annotations",            type="annotation", required=False, single_only=True),
     dict(key="ollama_url",         label="Ollama URL",             type="string", required=False,
          default="http://localhost:11434"),
 ]
@@ -238,6 +238,24 @@ def collect_numeric(field: dict, cast) -> list:
             return [v]
 
 
+def collect_annotation(field: dict) -> list:
+    print(f"  {dim('Reminder fields — do not modify the generated configuration.')}")
+
+    def ask_bool(prompt: str) -> bool:
+        while True:
+            raw = ask(prompt, "n").lower()
+            if raw in ("y", "yes"):
+                return True
+            if raw in ("n", "no", ""):
+                return False
+            print(red("  ✗ Enter y or n."))
+
+    fan         = ask_bool("Fan active? (y/n)")
+    accelerator = ask_bool("Accelerator active? (y/n)")
+    other       = ask("Other annotations", "")
+    return [{"fan": fan, "accelerator": accelerator, "other": other}]
+
+
 def collect_string(field: dict) -> list:
     default     = field.get("default", "")
     required    = field.get("required", True)
@@ -277,6 +295,8 @@ def collect_field(field: dict, idx: int, total: int) -> list:
         return collect_numeric(field, int)
     if ftype == "float":
         return collect_numeric(field, float)
+    if ftype == "annotation":
+        return collect_annotation(field)
     return collect_string(field)
 
 

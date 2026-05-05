@@ -56,5 +56,5 @@ configs/
 | `temperature` | float | any non-negative float |
 | `model_path_or_name` | string | model name or path to GGUF file |
 | `hardware_period` | float | sampling interval in seconds (single value) |
-| `anotations` | string | optional free-text description |
+| `anotations` | object | optional annotations (single value only): `fan` (bool), `accelerator` (bool), `other` (free string) — reminder fields about the test environment, they do not affect the generated configuration |
 | `ollama_url` | string | only asked when engine is `OLLAMA` |
