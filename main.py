@@ -32,8 +32,9 @@ def dim(t):    return _c("2",  t)
 FIELDS = [
     dict(key="inference_engine",   label="Inference Engine",       type="enum",   required=True,
          single_only=True,
-         choices=["LLAMA", "OLLAMA"],
-         hints={"LLAMA": "llama.cpp local", "OLLAMA": "Ollama server"}),
+         choices=["LLAMA", "OLLAMA", "HAILO_OLLAMA"],
+         hints={"LLAMA": "llama.cpp local", "OLLAMA": "Ollama server",
+                "HAILO_OLLAMA": "Hailo-Ollama server (Hailo AI HAT+ 2)"}),
     dict(key="test_type",          label="Test Type",              type="enum",   required=True,
          choices=["TYPE_0", "TYPE_1", "TYPE_2"],
          hints={"TYPE_0": "only prompt metrics",
@@ -51,6 +52,10 @@ FIELDS = [
     dict(key="anotations",         label="Annotations",            type="annotation", required=False, single_only=True),
     dict(key="ollama_url",         label="Ollama URL",             type="string", required=False,
          default="http://localhost:11434"),
+    dict(key="hailo_server_host",  label="Hailo Server Host",      type="string", required=False,
+         single_only=True, default="localhost"),
+    dict(key="hailo_server_port",  label="Hailo Server Port",      type="int",    required=False,
+         single_only=True, default=8000),
 ]
 
 
@@ -374,6 +379,15 @@ def main() -> None:
             print(f"  {dim('Skipped — engine is not OLLAMA')}")
             values_per_field[k] = [field.get("default", "")]
             continue
+
+        if k in ("hailo_server_host", "hailo_server_port") and selected_engine != "HAILO_OLLAMA":
+            section(f"[{idx}/{total}]  {field['label']}  {dim('(' + k + ')')}")
+            print(f"  {dim('Skipped — engine is not HAILO_OLLAMA')}")
+            values_per_field[k] = [field.get("default", "")]
+            continue
+
+        if k in ("batch_size", "context_size") and selected_engine == "HAILO_OLLAMA":
+            print(f"\n  {dim('ℹ  Ignored by HAILO_OLLAMA at runtime — compiled into the HEF file. Recorded for documentation.')}")
 
         vals = collect_field(field, idx, total)
         values_per_field[k] = vals

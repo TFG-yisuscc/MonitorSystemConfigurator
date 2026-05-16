@@ -47,14 +47,18 @@ configs/
 
 | Field | Type | Values / constraints |
 |---|---|---|
-| `inference_engine` | enum | `LLAMA`, `OLLAMA` |
+| `inference_engine` | enum | `LLAMA`, `OLLAMA`, `HAILO_OLLAMA` |
 | `test_type` | enum | `TYPE_0`, `TYPE_1`, `TYPE_2`, `TYPE_0 + TYPE_1` (combined shortcut) |
-| `batch_size` | int | any positive integer |
-| `context_size` | int | any positive integer |
+| `batch_size` | int | any positive integer ¹ |
+| `context_size` | int | any positive integer ¹ |
 | `seed` | int | any integer (single value) |
 | `num_prompts` | int | 1–541 (single value) |
 | `temperature` | float | any non-negative float |
 | `model_path_or_name` | string | model name or path to GGUF file |
 | `hardware_period` | float | sampling interval in seconds (single value) |
 | `anotations` | object | optional annotations (single value only): `fan` (bool), `accelerator` (bool), `other` (free string) — reminder fields about the test environment, they do not affect the generated configuration |
-| `ollama_url` | string | only asked when engine is `OLLAMA` |
+| `ollama_url` | string | only asked when engine is `OLLAMA` (default: `http://localhost:11434`) |
+| `hailo_server_host` | string | only asked when engine is `HAILO_OLLAMA` (default: `localhost`) |
+| `hailo_server_port` | int | only asked when engine is `HAILO_OLLAMA` (default: `8000`) |
+
+¹ Ignored by `HAILO_OLLAMA` at runtime — Hailo models are compiled as HEF files with these parameters fixed at compile time. They are still recorded in the output summary for documentation purposes.

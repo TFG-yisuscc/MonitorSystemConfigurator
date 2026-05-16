@@ -47,14 +47,18 @@ configs/
 
 | Campo | Tipo | Valores / restricciones |
 |---|---|---|
-| `inference_engine` | enum | `LLAMA`, `OLLAMA` |
+| `inference_engine` | enum | `LLAMA`, `OLLAMA`, `HAILO_OLLAMA` |
 | `test_type` | enum | `TYPE_0`, `TYPE_1`, `TYPE_2`, `TYPE_0 + TYPE_1` (combinado) |
-| `batch_size` | int | entero positivo |
-| `context_size` | int | entero positivo |
+| `batch_size` | int | entero positivo ¹ |
+| `context_size` | int | entero positivo ¹ |
 | `seed` | int | cualquier entero (valor único) |
 | `num_prompts` | int | 1–541 (valor único) |
 | `temperature` | float | decimal no negativo |
 | `model_path_or_name` | string | nombre del modelo o ruta al fichero GGUF |
 | `hardware_period` | float | intervalo de muestreo en segundos (valor único) |
 | `anotations` | object | anotaciones opcionales (solo valor único): `fan` (bool), `accelerator` (bool), `other` (string libre) — son recordatorios del entorno de prueba y no modifican la configuración generada |
-| `ollama_url` | string | solo se pregunta cuando el motor es `OLLAMA` |
+| `ollama_url` | string | solo se pregunta cuando el motor es `OLLAMA` (default: `http://localhost:11434`) |
+| `hailo_server_host` | string | solo se pregunta cuando el motor es `HAILO_OLLAMA` (default: `localhost`) |
+| `hailo_server_port` | int | solo se pregunta cuando el motor es `HAILO_OLLAMA` (default: `8000`) |
+
+¹ Ignorados por `HAILO_OLLAMA` en tiempo de ejecución — los modelos Hailo se compilan como ficheros HEF con estos parámetros fijados. Se registran en el resumen de salida como documentación.
